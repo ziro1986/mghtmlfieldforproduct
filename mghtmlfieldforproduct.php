@@ -58,15 +58,19 @@ class MgHtmlFieldForProduct extends Module {
         $sql->from('mghffp');
         $sql->where('id_product = ' . $id_product . '');
 
-        return Db::getInstance()->executeS($sql);
+        $result = Db::getInstance()->executeS($sql);
+
+        (empty($result)) ? $html = false : $html = $result[0]['html'];
+
+        return $html;
     }
 
     public function addOrUpdateHtml($id_product, $mghffp_html)
     {
         $html = $this->getHtml($id_product);
 
-        if (!empty($html)) {
-            if ($html[0]['html'] !== $mghffp_html) {
+        if ($html != false) {
+            if ($html !== $mghffp_html) {
                 Db::getInstance()->update('mghffp', array(
                     'html' => $mghffp_html
                 ), 'id_product ='.(int) $id_product);
@@ -89,8 +93,14 @@ class MgHtmlFieldForProduct extends Module {
 
     public function hookDisplayMghfpp($params)
     {
-        $this->context->smarty->assign('html', $this->getHtml($params['id_product'])[0]['html']);
-        return $this->display(__FILE__, 'mghfpp_dm.tpl');
+        $html = $this->getHtml($params['id_product']);
+
+        if ($html == false) {
+            return false;
+        } else {
+            $this->context->smarty->assign('html', $html);
+            return $this->display(__FILE__, 'mghfpp_dm.tpl');
+        }
     }
 
     public function hookActionProductUpdate($params)
@@ -109,7 +119,7 @@ class MgHtmlFieldForProduct extends Module {
 
     public function hookDisplayAdminProductsExtra($params)
     {
-        $this->context->smarty->assign('html', $this->getHtml($params['id_product'])[0]['html']);
+        $this->context->smarty->assign('html', $this->getHtml($params['id_product']));
         return $this->context->smarty->fetch($this->local_path.'views/templates/admin/mghffp_dape.tpl');
     }
 }
