@@ -105,15 +105,17 @@ class MgHtmlFieldForProduct extends Module {
 
     public function hookActionProductUpdate($params)
     {
-        $id_product = $params['id_product'];
-        $mghffp_html = Tools::getValue('mghffp_html');
-        
-        if (empty($mghffp_html)) {
-            if (!empty($this->getHtml($id_product))) {
-                $this->removeHtml($id_product);
+        if (isset($params['id_product'])) {
+            $id_product = $params['id_product'];
+            $mghffp_html = Tools::getValue('mghffp_html');
+
+            if (empty($mghffp_html)) {
+                if (!empty($this->getHtml($id_product))) {
+                    $this->removeHtml($id_product);
+                }
+            } else {
+                $this->addOrUpdateHtml($id_product, $mghffp_html);
             }
-        } else {
-            $this->addOrUpdateHtml($id_product, $mghffp_html);
         }
     }
 
