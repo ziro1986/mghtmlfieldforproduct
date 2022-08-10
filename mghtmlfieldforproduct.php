@@ -105,7 +105,7 @@ class MgHtmlFieldForProduct extends Module {
 
     public function hookActionProductUpdate($params)
     {
-        if (isset($params['id_product'])) {
+        if (Tools::getIsset('mghffp_token')) {
             $id_product = $params['id_product'];
             $mghffp_html = Tools::getValue('mghffp_html');
 
@@ -121,7 +121,15 @@ class MgHtmlFieldForProduct extends Module {
 
     public function hookDisplayAdminProductsExtra($params)
     {
-        $this->context->smarty->assign('html', $this->getHtml($params['id_product']));
+        $mghffp_token = Tools::passwdGen();
+
+        $this->context->smarty->assign(
+            array(
+                'html'=> $this->getHtml($params['id_product']),
+                'mghffp_token' => $mghffp_token
+            )
+        );
+
         return $this->context->smarty->fetch($this->local_path.'views/templates/admin/mghffp_dape.tpl');
     }
 }

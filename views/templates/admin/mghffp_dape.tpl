@@ -13,3 +13,6 @@
     <label for="mghffp_html"></label>
     <textarea id="mghffp_html" name="mghffp_html" rows="10" cols="50">{$html}</textarea>
 </div>
+<div class="form-group">
+    <input type="hidden" name="mghffp_token" value="{$mghffp_token}"/>
+</div>
